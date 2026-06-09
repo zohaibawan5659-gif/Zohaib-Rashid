@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Project Name | Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .project-detail-header {
+            padding: 10rem 0 4rem;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(11,14,20,1) 0%, rgba(21,26,34,1) 100%);
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .project-detail-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        .back-btn:hover {
+            color: var(--accent-secondary);
+            transform: translateX(-5px);
+        }
+        .project-documentation {
+            padding: 4rem 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .project-documentation h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+        }
+        .project-documentation p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+    </style>
+</head>
+<body>
+    <header id="header" class="scrolled">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="../../index.html">ZR.</a>
+            </div>
+            <nav class="nav-links">
+                <a href="../../index.html#projects">Back to Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="project-detail-header">
+        <div class="container">
+            <a href="../../index.html" class="back-btn">&larr; Back to Portfolio</a>
+            <h1>Project Template</h1>
+            <div class="project-tags" style="justify-content: center; margin-top: 2rem;">
+                <span class="tag">Technology 1</span>
+                <span class="tag">Technology 2</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="project-documentation">
+            <h2>Overview</h2>
+            <p>This is a reusable boilerplate template for individual project pages. When building new projects, simply copy this folder, rename it, and fill in the details below.</p>
+            
+            <h2>Architecture & Technical Details</h2>
+            <p>Describe the specific technical architecture, challenges faced, and solutions implemented.</p>
+            <p>Example: The system utilizes a serverless architecture with Node.js to ensure high availability and scalability while keeping infrastructure costs low.</p>
+        </div>
+    </div>
+
+    <footer class="footer-section" style="margin-top:0;">
+        <div class="container text-center">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Zohaib Rashid. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
