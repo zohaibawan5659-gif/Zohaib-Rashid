@@ -141,17 +141,40 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
         chatInput.focus();
     }
 
-    // Handle Suggested Questions
-    const suggestedQuestionsDiv = document.getElementById('suggested-questions');
-    const suggestionBtns = document.querySelectorAll('.suggestion-btn');
+    const hideInitialUI = () => {
+        const suggestedQuestionsDiv = document.getElementById('suggested-questions');
+        const heroPromptDiv = document.getElementById('hero-prompt');
+        if (suggestedQuestionsDiv) suggestedQuestionsDiv.style.display = 'none';
+        if (heroPromptDiv) heroPromptDiv.style.display = 'none';
+    };
 
+    // Let's use a simpler approach: hook into appendMessage since it's called immediately when user sends a message.
+    const originalAppendMessage = appendMessage;
+    appendMessage = (text, sender) => {
+        if (sender === 'user') {
+            hideInitialUI();
+        }
+        originalAppendMessage(text, sender);
+    };
+
+    // Suggestion Buttons
+    const suggestionBtns = document.querySelectorAll('.suggestion-btn');
     suggestionBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            chatInput.value = btn.textContent;
-            if (suggestedQuestionsDiv) {
-                suggestedQuestionsDiv.style.display = 'none';
-            }
-            handleSend();
+            const input = document.getElementById('chat-input');
+            input.value = btn.textContent;
+            hideInitialUI();
+            
+            // Trigger send button click
+            const sendBtn = document.getElementById('send-chat-btn');
+            if(sendBtn) sendBtn.click();
         });
     });
-});
+
+    // Clear Conversation
+    const clearChatBtn = document.getElementById('clear-chat-btn');
+    if (clearChatBtn) {
+        clearChatBtn.addEventListener('click', () => {
+            location.reload();
+        });
+    }
