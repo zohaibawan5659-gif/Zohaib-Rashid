@@ -3,6 +3,13 @@
  * Main JavaScript File
  */
 
+if (history.scrollRestoration) {
+    history.scrollRestoration = 'manual';
+}
+
+// Scroll to top on page load/reload
+window.scrollTo(0, 0);
+
 document.addEventListener('DOMContentLoaded', () => {
     
     // Sticky Header
