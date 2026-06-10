@@ -126,10 +126,30 @@
                 height: auto;
             }
             .chat-window {
-                height: 70vh;
+                height: auto;
+                min-height: 70vh;
+                padding-bottom: 100px; /* Padding to prevent content from hiding behind fixed input */
+            }
+            .chat-input-area {
+                position: fixed;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                background-color: var(--bg-secondary);
+                padding: 1rem;
+                border-top: 1px solid var(--border-glass);
+                z-index: 100;
+                box-sizing: border-box;
+            }
+            .chat-messages {
+                padding-bottom: 2rem; /* Extra padding in the scrollable area */
             }
             .suggested-questions {
-                grid-template-columns: 1fr;
+                display: flex;
+                flex-direction: column;
+            }
+            .suggestion-btn {
+                width: 100%;
             }
         }
     </style>
