@@ -159,14 +159,8 @@
                 min-width: 0 !important;
             }
             #send-chat-btn {
-                width: 44px !important;
-                height: 44px !important;
-                padding: 0 !important;
-                display: flex !important;
-                justify-content: center;
-                align-items: center;
-                border-radius: 10px;
-                flex-shrink: 0;
+                flex: 0 0 auto !important;
+                width: max-content !important;
             }
         }
     </style>
@@ -223,10 +217,8 @@
                 
             </div>
             <div class="chat-input-area">
-                <input type="text" id="chat-input" placeholder="Ask about Muhammad Rashid Profession..." autocomplete="off" />
-                <button id="send-chat-btn" class="btn btn-primary">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"></line><polygon points="22 2 15 22 11 13 2 9 22 2"></polygon></svg>
-                </button>
+                <input type="text" id="chat-input" placeholder="Ask about LM or LS roles..." autocomplete="off" />
+                <button id="send-chat-btn" class="btn btn-primary">Send</button>
             </div>
         </div>
     </div>
