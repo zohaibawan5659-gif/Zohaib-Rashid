@@ -133,6 +133,9 @@
             }
         }
         @media (max-width: 768px) {
+            .app-container {
+                height: 100dvh !important;
+            }
             .chat-messages {
                 height: auto !important;
                 overflow: visible !important;
@@ -140,6 +143,24 @@
             .chat-window {
                 height: auto !important;
                 max-height: none !important;
+            }
+            .chat-input-area {
+                width: 100% !important;
+                box-sizing: border-box !important;
+                margin: 0 !important;
+                display: flex !important;
+                gap: 8px !important;
+                align-items: center !important;
+            }
+            #chat-input {
+                font-size: 16px !important;
+                flex: 1 1 auto !important;
+                width: 100% !important;
+                min-width: 0 !important;
+            }
+            #send-chat-btn {
+                flex: 0 0 auto !important;
+                width: max-content !important;
             }
         }
     </style>
