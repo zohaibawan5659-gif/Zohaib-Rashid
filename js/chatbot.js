@@ -4,53 +4,35 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const sendChatBtn = document.getElementById('send-chat-btn');
 
-    const GEMINI_API_KEY = "AQ.Ab8RN6JcNunp66D76jT_-hvN3j4QxGgnPeOAbJQ-0bhmuQ1dAQ";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    const API_KEY = "AQ.Ab8RN6KG9jdGNo0hjhAseFfMHsIwdlF-8Sk9yD-Byg3Ou__fFw";
+    
+    const systemPrompt = "You are a respectful assistant answering questions about Muhammad Rashid's career. He works at WAPDA. He currently serves as an LM (Lineman), repairing high-voltage electrical lines, and is transitioning to an LS (Line Superintendent) role, overseeing grid safety.";
 
-    const SYSTEM_PROMPT = `
-You are a helpful, respectful, and professional AI assistant. Your sole purpose is to answer questions about Muhammad Rashid and his career at WAPDA. You act as a digital portfolio and tribute to his hard work.
-Always maintain a tone of respect and pride when discussing his profession. Use the following Knowledge Base to answer user questions.
+    const hideInitialUI = () => {
+        const suggestedQuestionsDiv = document.getElementById('suggested-questions');
+        const heroPromptDiv = document.getElementById('hero-prompt');
+        if (suggestedQuestionsDiv) suggestedQuestionsDiv.style.display = 'none';
+        if (heroPromptDiv) heroPromptDiv.style.display = 'none';
+    };
 
-### KNOWLEDGE BASE:
-1. ABOUT MUHAMMAD RASHID:
-- Muhammad Rashid is a dedicated and hardworking professional working in the power sector. 
-- He currently serves as an LM (Lineman) and is on his way to being promoted to the rank of LS (Line Superintendent).
-
-2. ABOUT WAPDA:
-- WAPDA stands for the Water and Power Development Authority. 
-- It is a major government organization in Pakistan responsible for managing water resources and generating electricity. 
-- (Note: Local distribution in cities like Multan is managed by connected companies like MEPCO, but it is colloquially and proudly referred to as WAPDA).
-
-3. ABOUT THE LM (LINEMAN) ROLE:
-- LM stands for Lineman. 
-- Linemen are the frontline heroes of the electricity grid. They work hands-on to install, maintain, and repair electrical power systems (climbing poles, fixing broken wires, restoring power).
-- The job is highly dangerous and physically demanding. LMs deal with high-voltage electricity, work at great heights, and repair faults during extreme weather like heavy rain or intense heat.
-
-4. ABOUT THE LS (LINE SUPERINTENDENT) ROLE:
-- LS stands for Line Superintendent. 
-- It is a senior, supervisory leadership role. 
-- An LS manages and oversees the Linemen (LMs), plans maintenance tasks, handles grid operations, and ensures all strict safety protocols are followed.
-
-5. PROMOTION FROM LM TO LS:
-- An LM is promoted to an LS through years of hard work, hands-on field experience, and successfully passing internal departmental exams. It shifts an employee from manual field work to a respected management position.
-
-### RULES FOR CONVERSATION:
-- Do not make up any information about Muhammad Rashid outside of what is provided here.
-- If a user asks about the difference between an LM and LS, contrast the hands-on physical labor of the LM with the supervisory/planning nature of the LS.
-- If a user asks a question completely unrelated to Muhammad Rashid, WAPDA, or electricity, politely decline to answer and guide them back to the topic. For example: "I am specifically designed to talk about Muhammad Rashid and his career at WAPDA. Would you like to know more about what a Lineman does?"
-    `.trim();
-
-    // Store chat history
-    let chatHistory = [];
-
-    const appendMessage = (text, sender) => {
+    const appendMessage = (text, sender, isTyping = false) => {
+        if (sender === 'user') {
+            hideInitialUI();
+        }
+        
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message');
+        
         if (sender === 'user') {
             msgDiv.classList.add('user-message');
         } else {
             msgDiv.classList.add('bot-message');
         }
+        
+        if (isTyping) {
+            msgDiv.id = 'typing-indicator';
+        }
+
         // Basic HTML formatting for newlines and asterisks
         let formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
         msgDiv.innerHTML = formattedText;
@@ -60,52 +42,36 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
 
     const generateResponse = async (userMessage) => {
         try {
-            // Append user message to history
-            chatHistory.push({
-                role: "user",
-                parts: [{ text: userMessage }]
-            });
-
-            const requestBody = {
-                systemInstruction: {
-                    parts: [{ text: SYSTEM_PROMPT }]
-                },
-                contents: chatHistory,
-                generationConfig: {
-                    temperature: 0.7,
-                }
-            };
-
-            const response = await fetch(API_URL, {
+            // NOTE: Using gemini-2.5-flash because 1.5-flash is no longer available on this tier and returns 404
+            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify({
+                    contents: [{
+                        parts: [{
+                            text: systemPrompt + "\n\nUser Question: " + userMessage
+                        }]
+                    }]
+                })
             });
 
-            const data = await response.json();
-            
             if (!response.ok) {
-                console.error("API Error Details:", data);
-                throw new Error(data.error?.message || "Failed to fetch response");
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || `Status: ${response.status}`);
             }
 
-            const botText = data.candidates[0].content.parts[0].text;
+            const data = await response.json();
+            const botMessage = data.candidates[0].content.parts[0].text;
             
-            // Append bot message to history
-            chatHistory.push({
-                role: "model",
-                parts: [{ text: botText }]
-            });
-
-            return botText;
-
+            return botMessage;
+            
         } catch (error) {
-            console.error("Chatbot Error:", error);
-            // Revert chat history if it failed
-            chatHistory.pop();
-            return "Sorry, I encountered an error connecting to my knowledge base. Please check the API key or try again later.";
+            console.error("Gemini API Error:", error);
+            // Force the UI to display the exact system error:
+            const uiErrorMessage = `System Error: ${error.message}. Please check the console.`;
+            return uiErrorMessage;
         }
     };
 
@@ -116,15 +82,21 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
         appendMessage(text, 'user');
         chatInput.value = '';
         chatInput.disabled = true;
-        sendChatBtn.disabled = true;
-        sendChatBtn.textContent = '...';
+        if(sendChatBtn) sendChatBtn.disabled = true;
+
+        // Add typing indicator
+        appendMessage('Typing...', 'bot', true);
 
         const reply = await generateResponse(text);
+        
+        // Remove typing indicator
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+
         appendMessage(reply, 'bot');
 
         chatInput.disabled = false;
-        sendChatBtn.disabled = false;
-        sendChatBtn.textContent = 'Send';
+        if(sendChatBtn) sendChatBtn.disabled = false;
         chatInput.focus();
     };
 
@@ -141,33 +113,14 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
         chatInput.focus();
     }
 
-    const hideInitialUI = () => {
-        const suggestedQuestionsDiv = document.getElementById('suggested-questions');
-        const heroPromptDiv = document.getElementById('hero-prompt');
-        if (suggestedQuestionsDiv) suggestedQuestionsDiv.style.display = 'none';
-        if (heroPromptDiv) heroPromptDiv.style.display = 'none';
-    };
-
-    // Let's use a simpler approach: hook into appendMessage since it's called immediately when user sends a message.
-    const originalAppendMessage = appendMessage;
-    appendMessage = (text, sender) => {
-        if (sender === 'user') {
-            hideInitialUI();
-        }
-        originalAppendMessage(text, sender);
-    };
-
     // Suggestion Buttons
     const suggestionBtns = document.querySelectorAll('.suggestion-btn');
     suggestionBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const input = document.getElementById('chat-input');
-            input.value = btn.textContent;
-            hideInitialUI();
-            
-            // Trigger send button click
-            const sendBtn = document.getElementById('send-chat-btn');
-            if(sendBtn) sendBtn.click();
+            if (chatInput && !chatInput.disabled) {
+                chatInput.value = btn.textContent;
+                handleSend();
+            }
         });
     });
 
@@ -178,3 +131,4 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
             location.reload();
         });
     }
+});
