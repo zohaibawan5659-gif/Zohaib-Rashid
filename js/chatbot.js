@@ -4,10 +4,10 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const sendChatBtn = document.getElementById('send-chat-btn');
 
-    const GEMINI_API_KEY = "AQ.Ab8RN6JcNunp66D76jT_-hvN3j4QxGgnPeOAbJQ-0bhmuQ1dAQ";
-    const API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+    const API_KEY = "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";
+    const API_URL = "https://openrouter.ai/api/v1/chat/completions";
 
-    const SYSTEM_PROMPT = `
+    const systemPrompt = `
 You are a helpful, respectful, and professional AI assistant. Your sole purpose is to answer questions about Muhammad Rashid and his career at WAPDA. You act as a digital portfolio and tribute to his hard work.
 Always maintain a tone of respect and pride when discussing his profession. Use the following Knowledge Base to answer user questions.
 
@@ -43,14 +43,31 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
     // Store chat history
     let chatHistory = [];
 
-    const appendMessage = (text, sender) => {
+    const hideInitialUI = () => {
+        const suggestedQuestionsDiv = document.getElementById('suggested-questions');
+        const heroPromptDiv = document.getElementById('hero-prompt');
+        if (suggestedQuestionsDiv) suggestedQuestionsDiv.style.display = 'none';
+        if (heroPromptDiv) heroPromptDiv.style.display = 'none';
+    };
+
+    const appendMessage = (text, sender, isTyping = false) => {
+        if (sender === 'user') {
+            hideInitialUI();
+        }
+        
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message');
+        
         if (sender === 'user') {
             msgDiv.classList.add('user-message');
         } else {
             msgDiv.classList.add('bot-message');
         }
+        
+        if (isTyping) {
+            msgDiv.id = 'typing-indicator';
+        }
+
         // Basic HTML formatting for newlines and asterisks
         let formattedText = text.replace(/\n/g, '<br>').replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>').replace(/\*(.*?)\*/g, '<em>$1</em>');
         msgDiv.innerHTML = formattedText;
@@ -60,52 +77,38 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
 
     const generateResponse = async (userMessage) => {
         try {
-            // Append user message to history
-            chatHistory.push({
-                role: "user",
-                parts: [{ text: userMessage }]
-            });
-
-            const requestBody = {
-                systemInstruction: {
-                    parts: [{ text: SYSTEM_PROMPT }]
-                },
-                contents: chatHistory,
-                generationConfig: {
-                    temperature: 0.7,
-                }
-            };
-
             const response = await fetch(API_URL, {
                 method: "POST",
                 headers: {
+                    "Authorization": `Bearer ${API_KEY}`,
+                    "HTTP-Referer": window.location.href, // Crucial for CORS
+                    "X-Title": "Father Profession Chatbot", // Crucial for CORS
                     "Content-Type": "application/json"
                 },
-                body: JSON.stringify(requestBody)
+                body: JSON.stringify({
+                    model: "openai/gpt-3.5-turbo",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        { role: "user", content: userMessage }
+                    ]
+                })
             });
 
-            const data = await response.json();
-            
             if (!response.ok) {
-                console.error("API Error Details:", data);
-                throw new Error(data.error?.message || "Failed to fetch response");
+                const errorData = await response.json();
+                throw new Error(errorData.error?.message || `Status: ${response.status}`);
             }
 
-            const botText = data.candidates[0].content.parts[0].text;
+            const data = await response.json();
+            const botText = data.choices[0].message.content;
             
-            // Append bot message to history
-            chatHistory.push({
-                role: "model",
-                parts: [{ text: botText }]
-            });
-
             return botText;
 
         } catch (error) {
-            console.error("Chatbot Error:", error);
+            console.error("Detailed Fetch Error:", error);
             // Revert chat history if it failed
             chatHistory.pop();
-            return "Sorry, I encountered an error connecting to my knowledge base. Please check the API key or try again later.";
+            return `System Error: ${error.message}. Please check the browser console for details.`;
         }
     };
 
@@ -116,15 +119,21 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
         appendMessage(text, 'user');
         chatInput.value = '';
         chatInput.disabled = true;
-        sendChatBtn.disabled = true;
-        sendChatBtn.textContent = '...';
+        if(sendChatBtn) sendChatBtn.disabled = true;
+
+        // Add typing indicator
+        appendMessage('Typing...', 'bot', true);
 
         const reply = await generateResponse(text);
+        
+        // Remove typing indicator
+        const indicator = document.getElementById('typing-indicator');
+        if (indicator) indicator.remove();
+
         appendMessage(reply, 'bot');
 
         chatInput.disabled = false;
-        sendChatBtn.disabled = false;
-        sendChatBtn.textContent = 'Send';
+        if(sendChatBtn) sendChatBtn.disabled = false;
         chatInput.focus();
     };
 
@@ -141,33 +150,14 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
         chatInput.focus();
     }
 
-    const hideInitialUI = () => {
-        const suggestedQuestionsDiv = document.getElementById('suggested-questions');
-        const heroPromptDiv = document.getElementById('hero-prompt');
-        if (suggestedQuestionsDiv) suggestedQuestionsDiv.style.display = 'none';
-        if (heroPromptDiv) heroPromptDiv.style.display = 'none';
-    };
-
-    // Let's use a simpler approach: hook into appendMessage since it's called immediately when user sends a message.
-    const originalAppendMessage = appendMessage;
-    appendMessage = (text, sender) => {
-        if (sender === 'user') {
-            hideInitialUI();
-        }
-        originalAppendMessage(text, sender);
-    };
-
     // Suggestion Buttons
     const suggestionBtns = document.querySelectorAll('.suggestion-btn');
     suggestionBtns.forEach(btn => {
         btn.addEventListener('click', () => {
-            const input = document.getElementById('chat-input');
-            input.value = btn.textContent;
-            hideInitialUI();
-            
-            // Trigger send button click
-            const sendBtn = document.getElementById('send-chat-btn');
-            if(sendBtn) sendBtn.click();
+            if (chatInput && !chatInput.disabled) {
+                chatInput.value = btn.textContent;
+                handleSend();
+            }
         });
     });
 
@@ -178,3 +168,4 @@ Always maintain a tone of respect and pride when discussing his profession. Use 
             location.reload();
         });
     }
+});
