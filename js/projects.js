@@ -11,11 +11,12 @@ document.addEventListener('DOMContentLoaded', () => {
             url: "projects/project-template/index.html"
         },
         {
-            title: "Data Visualization Dashboard",
-            description: "Developed an interactive business intelligence dashboard to visualize key performance indicators.",
-            tags: ["Power BI", "Python", "SQL"],
+            title: "QuantumAnalytics Performance Hub",
+            description: "Developed an interactive business intelligence dashboard to visualize key performance indicators, analyzing $164.19K total revenue and $88.48K profit.",
+            tags: ["Power BI", "Python", "SQL", "DAX"],
             imageClass: "gradient-2",
-            url: "projects/project-template/index.html"
+            image: "assets/dashboard.jpg",
+            url: "PowerBi.html"
         },
         {
             title: "Algorithmic Pathfinding Tool",
@@ -45,7 +46,10 @@ document.addEventListener('DOMContentLoaded', () => {
         anchor.innerHTML = `
             <div class="project-card glass-card scroll-reveal ${delayClass}">
                 <div class="project-image">
-                    <div class="image-placeholder ${project.imageClass}"></div>
+                    ${project.image 
+                        ? `<img src="${project.image}" alt="${project.title}" class="image-placeholder" style="object-fit: cover; width: 100%; height: 100%;">` 
+                        : `<div class="image-placeholder ${project.imageClass}"></div>`
+                    }
                 </div>
                 <div class="project-info">
                     <h3>${project.title}</h3>

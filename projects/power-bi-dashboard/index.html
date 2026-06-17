@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QuantumAnalytics Performance Hub | Portfolio</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;800&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../../css/style.css">
+    <style>
+        .project-detail-header {
+            padding: 10rem 0 4rem;
+            text-align: center;
+            background: linear-gradient(to bottom, rgba(11,14,20,1) 0%, rgba(21,26,34,1) 100%);
+            border-bottom: 1px solid var(--border-glass);
+        }
+        .project-detail-header h1 {
+            font-size: 3.5rem;
+            margin-bottom: 1rem;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 2rem;
+            color: var(--accent-primary);
+            font-weight: 500;
+            transition: var(--transition-fast);
+        }
+        .back-btn:hover {
+            color: var(--accent-secondary);
+            transform: translateX(-5px);
+        }
+        .project-documentation {
+            padding: 4rem 0;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        .project-documentation h2 {
+            margin-top: 2rem;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-family: var(--font-heading);
+            border-bottom: 1px solid var(--border-glass);
+            padding-bottom: 0.5rem;
+        }
+        .project-documentation h3 {
+            margin-top: 1.5rem;
+            margin-bottom: 0.5rem;
+            color: var(--accent-primary);
+            font-family: var(--font-heading);
+        }
+        .project-documentation p {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+        }
+        .project-documentation ul {
+            list-style-type: none;
+            padding-left: 0;
+            margin-bottom: 2rem;
+        }
+        .project-documentation li {
+            position: relative;
+            padding-left: 1.5rem;
+            margin-bottom: 0.8rem;
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+        }
+        .project-documentation li::before {
+            content: '•';
+            position: absolute;
+            left: 0;
+            color: var(--accent-primary);
+            font-size: 1.5rem;
+            line-height: 1;
+            top: -2px;
+        }
+        .dashboard-img {
+            width: 100%;
+            height: auto;
+            border-radius: var(--border-radius-lg);
+            border: 1px solid var(--border-glass);
+            box-shadow: var(--glow-shadow);
+            margin: 2rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header id="header" class="scrolled">
+        <div class="container header-container">
+            <div class="logo">
+                <a href="../../index.html">ZR.</a>
+            </div>
+            <nav class="nav-links">
+                <a href="../../index.html#projects">Back to Projects</a>
+            </nav>
+        </div>
+    </header>
+
+    <div class="project-detail-header">
+        <div class="container">
+            <a href="../../index.html#projects" class="back-btn">&larr; Back to Portfolio</a>
+            <h1>QuantumAnalytics Performance Hub</h1>
+            <div class="project-tags" style="justify-content: center; margin-top: 2rem;">
+                <span class="tag">Power BI</span>
+                <span class="tag">Python</span>
+                <span class="tag">SQL</span>
+                <span class="tag">DAX</span>
+            </div>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="project-documentation">
+            
+            <p>Welcome to the comprehensive breakdown of the QuantumAnalytics Performance Hub. This interactive dashboard was engineered to provide executive-level visibility into global sales metrics and operational efficiency.</p>
+
+            <img src="../../assets/dashboard.jpg" alt="QuantumAnalytics Performance Hub Dashboard" class="dashboard-img">
+
+            <h2>High-Level KPIs</h2>
+            <p>The dashboard focuses on delivering immediate, actionable insights through vital top-line metrics that drive business strategy:</p>
+            <ul>
+                <li><strong>Total Revenue:</strong> $164.19K (showing a strong upward trajectory of +15%)</li>
+                <li><strong>Total Profit:</strong> $88.48K (with a solid +10% growth indicator)</li>
+                <li><strong>Volume:</strong> 542 total units sold across all regions</li>
+                <li><strong>Pricing Strategy:</strong> An average discount rate maintained at 38.0%</li>
+            </ul>
+
+            <h2>Sales Representative Performance</h2>
+            <p>A crucial component of the architecture involves tracking individual contributor performance to identify top talent and optimize sales strategies. The dashboard highlights a highly competitive sales environment:</p>
+            <ul>
+                <li><strong>Ahmed Khan & Sara Ali:</strong> Leading the pack, both generating an impressive $38.1K in revenue.</li>
+                <li><strong>James Smith:</strong> A strong performer contributing $27.7K.</li>
+                <li><strong>Liu Wei:</strong> Closely following with $27.3K in generated sales.</li>
+                <li><strong>Maria Lopez:</strong> Securing a solid $24.6K in revenue.</li>
+            </ul>
+
+            <h2>Market & Customer Insights</h2>
+            <p>By segmenting the data, the dashboard reveals critical patterns in customer behavior, geographical strengths, and financial processing preferences:</p>
+            <ul>
+                <li><strong>Geographic Distribution:</strong> Asia dominates the revenue stream, followed closely by Europe and North America, with Latin America representing a smaller market share. The geospatial mapping confirms strong clusters in North America and Asia.</li>
+                <li><strong>Customer Segmentation:</strong> The 'Retail' sector is the primary revenue driver (exceeding 50K), significantly outpacing both 'Corporate' and 'Enterprise' segments.</li>
+                <li><strong>Transaction Preferences:</strong> 'Credit Card' transactions are the most popular, accounting for 45% (244 units) of sales. 'Bank Transfers' represent 30% (163 units), while 'PayPal' covers the remaining 25% (135 units).</li>
+            </ul>
+
+            <h2>Portfolio Value</h2>
+            <p>This Power BI dashboard demonstrates a high-level mastery of data modeling, DAX measure creation, and UX-focused visualization design. It proves my ability to transform raw, complex data into an intuitive, interactive narrative that empowers executives to make immediate, data-driven decisions.</p>
+            
+        </div>
+    </div>
+
+    <footer class="footer-section" style="margin-top:0;">
+        <div class="container text-center">
+            <div class="footer-bottom">
+                <p>&copy; 2026 Zohaib Rashid. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>
