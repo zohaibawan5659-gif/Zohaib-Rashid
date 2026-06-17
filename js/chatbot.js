@@ -4,9 +4,21 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const sendChatBtn = document.getElementById('send-chat-btn');
 
-    const API_KEY = "AQ.Ab8RN6KG9jdGNo0hjhAseFfMHsIwdlF-8Sk9yD-Byg3Ou__fFw";
+    const API_KEY = "AQ.Ab8RN6LeNZw_8U45ZszgeeS0Gt77BSDjQE4s0FTp6JUkawUbwg";
+    let chatHistory = [];
     
-    const systemPrompt = "You are a respectful assistant answering questions about Muhammad Rashid's career. He works at WAPDA. He currently serves as an LM (Lineman), repairing high-voltage electrical lines, and is transitioning to an LS (Line Superintendent) role, overseeing grid safety.";
+    const systemPrompt = `You are a helpful and respectful assistant dedicated to answering questions about Muhammad Rashid's career and the Lineman profession.
+
+KNOWLEDGE BASE:
+Muhammad Rashid is 53 years old. He has a dedicated career at WAPDA (Water and Power Development Authority). He served as an LM (Lineman), which is a physically demanding job repairing and installing high-voltage electrical lines. General requirements to become an LM at WAPDA include strong physical fitness, perfect eyesight, and a minimum height. He is currently transitioning to the senior role of LS (Line Superintendent), where he oversees grid safety and manages other linemen.
+
+IMPORTANT RULES:
+
+If a user asks ANY general or specific question related to the Lineman (LM)/Line Superintendent (LS) profession, WAPDA, power grids, electricity management, or related careers, you must act as if you are retrieving this information from Google. Use your extensive general knowledge to answer them accurately and comprehensively.
+
+You MUST also answer questions about his age, biographical details, career timeline, WAPDA as an organization, and general details about his specific roles.
+
+If a user asks about completely unrelated external topics (like weather, politics, cooking, general coding, or any non-profession queries), you MUST absolutely refuse and reply exactly with: "I am trained only to tell about Muhammad Rashid Profession."`;
 
     const hideInitialUI = () => {
         const suggestedQuestionsDiv = document.getElementById('suggested-questions');
@@ -42,18 +54,20 @@ document.addEventListener('DOMContentLoaded', () => {
 
     const generateResponse = async (userMessage) => {
         try {
-            // NOTE: Using gemini-2.5-flash because 1.5-flash is no longer available on this tier and returns 404
-            const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${API_KEY}`, {
+            chatHistory.push({ role: "user", content: userMessage });
+
+            const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
                 headers: {
+                    "Authorization": `Bearer ${API_KEY}`,
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify({
-                    contents: [{
-                        parts: [{
-                            text: systemPrompt + "\n\nUser Question: " + userMessage
-                        }]
-                    }]
+                    model: "openai/gpt-3.5-turbo",
+                    messages: [
+                        { role: "system", content: systemPrompt },
+                        ...chatHistory
+                    ]
                 })
             });
 
@@ -63,7 +77,9 @@ document.addEventListener('DOMContentLoaded', () => {
             }
 
             const data = await response.json();
-            const botMessage = data.candidates[0].content.parts[0].text;
+            const botMessage = data.choices[0].message.content;
+            
+            chatHistory.push({ role: "assistant", content: botMessage });
             
             return botMessage;
             
