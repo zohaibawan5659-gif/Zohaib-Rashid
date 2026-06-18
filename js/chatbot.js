@@ -4,9 +4,9 @@ document.addEventListener('DOMContentLoaded', () => {
     const chatInput = document.getElementById('chat-input');
     const sendChatBtn = document.getElementById('send-chat-btn');
 
-    const API_KEY = "AQ.Ab8RN6LeNZw_8U45ZszgeeS0Gt77BSDjQE4s0FTp6JUkawUbwg";
+    const API_KEY = "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";
     let chatHistory = [];
-    
+
     const systemPrompt = `You are a helpful and respectful assistant dedicated to answering questions about Muhammad Rashid's career and the Lineman profession.
 
 KNOWLEDGE BASE:
@@ -31,16 +31,16 @@ If a user asks about completely unrelated external topics (like weather, politic
         if (sender === 'user') {
             hideInitialUI();
         }
-        
+
         const msgDiv = document.createElement('div');
         msgDiv.classList.add('message');
-        
+
         if (sender === 'user') {
             msgDiv.classList.add('user-message');
         } else {
             msgDiv.classList.add('bot-message');
         }
-        
+
         if (isTyping) {
             msgDiv.id = 'typing-indicator';
         }
@@ -78,11 +78,11 @@ If a user asks about completely unrelated external topics (like weather, politic
 
             const data = await response.json();
             const botMessage = data.choices[0].message.content;
-            
+
             chatHistory.push({ role: "assistant", content: botMessage });
-            
+
             return botMessage;
-            
+
         } catch (error) {
             console.error("Gemini API Error:", error);
             // Force the UI to display the exact system error:
@@ -98,13 +98,13 @@ If a user asks about completely unrelated external topics (like weather, politic
         appendMessage(text, 'user');
         chatInput.value = '';
         chatInput.disabled = true;
-        if(sendChatBtn) sendChatBtn.disabled = true;
+        if (sendChatBtn) sendChatBtn.disabled = true;
 
         // Add typing indicator
         appendMessage('Typing...', 'bot', true);
 
         const reply = await generateResponse(text);
-        
+
         // Remove typing indicator
         const indicator = document.getElementById('typing-indicator');
         if (indicator) indicator.remove();
@@ -112,14 +112,14 @@ If a user asks about completely unrelated external topics (like weather, politic
         appendMessage(reply, 'bot');
 
         chatInput.disabled = false;
-        if(sendChatBtn) sendChatBtn.disabled = false;
+        if (sendChatBtn) sendChatBtn.disabled = false;
         chatInput.focus();
     };
 
     if (sendChatBtn) {
         sendChatBtn.addEventListener('click', handleSend);
     }
-    
+
     if (chatInput) {
         chatInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
